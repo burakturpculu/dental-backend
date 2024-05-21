@@ -20,7 +20,6 @@ export class AuthService {
     }
     return null;
   }
-
   async signin(signinDto: SigninDto) {
     const user = await this.validateUser(signinDto.email, signinDto.password);
     if (!user) {
@@ -29,6 +28,14 @@ export class AuthService {
     const payload: JwtPayload = { email: user.email, sub: user.id };
     return {
       access_token: this.jwtService.sign(payload),
+      user: {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        phoneNumber: user.phoneNumber,
+        birthDate: user.birthDate,
+      }
     };
-  }
+}
+
 }

@@ -1,29 +1,36 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
-import { ApiProperty } from '@nestjs/swagger';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import { v4 as uuidv4 } from 'uuid';
+import { Prediction } from '../../prediction/entities/prediction.entity';
 
 @Entity()
 export class User {
-  @ApiProperty({ example: '123e4567-e89b-12d3-a456-426614174000', description: 'The UUID of the user' })
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
+    @PrimaryGeneratedColumn('uuid')
+    id: string;
 
-  @ApiProperty({ example: 'user@example.com', description: 'The email of the user' })
-  @Column({ unique: true })
-  email: string;
+    @Column({ unique: true })
+    email: string;
 
-  @ApiProperty({ example: 'John Doe', description: 'The name of the user' })
-  @Column()
-  name: string;
+    @Column()
+    name: string;
 
-  @ApiProperty({ example: 'StrongPassword123', description: 'The password of the user' })
-  @Column()
-  password: string;
+    @Column()
+    password: string;
 
-  @ApiProperty({ example: '+123456789', description: 'The phone number of the user' })
-  @Column()
-  phoneNumber: string;
+    @Column()
+    phoneNumber: string;
 
-  @ApiProperty({ example: '1990-01-01', description: 'The birth date of the user' })
-  @Column()
-  birthDate: Date;
+    @Column()
+    birthDate: Date;
+
+    @OneToMany(() => Prediction, prediction => prediction.user)
+    predictions: Prediction[];
+
+    constructor(email: string, name: string, password: string, phoneNumber: string, birthDate: Date) {
+        this.id = uuidv4();
+        this.email = email;
+        this.name = name;
+        this.password = password;
+        this.phoneNumber = phoneNumber;
+        this.birthDate = birthDate;
+    }
 }
