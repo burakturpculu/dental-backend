@@ -1,9 +1,9 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { AbstractRepository } from 'src/common/abstract/abstract-repo-service';
+import { AbstractRepository } from '../../../common/abstract/abstract-repo-service';
 import { User } from '../entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EntityManager, Repository } from 'typeorm';
-import { AbstractDelete } from 'src/common/abstract/abstract-delete.interface';
+import { AbstractDelete } from '../../../common/abstract/abstract-delete.interface';
 import { FindRepositoryService } from './find-repository.service';
 
 @Injectable()

@@ -1,156 +1,109 @@
-import {
-  Injectable,
-  NotFoundException,
-  ConflictException,
-  InternalServerErrorException,
-} from '@nestjs/common';
-import { DomainService } from './domain/domain.service';
-import { User } from './entities/user.entity';
+import { InternalServerErrorException } from '@nestjs/common';
+import { Test, TestingModule } from '@nestjs/testing';
+import * as dayjs from 'dayjs';
 import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { User } from './entities/user.entity';
+import { UserController } from './user.controller';
+import { UserService } from './user.service';
 
-@Injectable()
-export class UserService {
-  constructor(private readonly domainService: DomainService) {}
+jest.setTimeout(240_000);
+describe('User Controller', () => {
+  let controller: UserController;
+  let service: UserService;
 
-  async findAll(): Promise<User[]> {
-    try {
-      const users = await this.domainService.findRepositoryService.findAll();
-      if (!users.length) {
-        throw new NotFoundException('Hiçbir kullanıcı bulunamadı');
-      }
-      return users;
-    } catch (error) {
-      throw new InternalServerErrorException(
-        'Kullanıcıları getirirken bir hata oluştu',
-      );
-    }
-  }
+  beforeEach(async () => {
+    const module: TestingModule = await Test.createTestingModule({
+      imports: [],
+      controllers: [UserController],
+      providers: [
+        UserService,
+        {
+          provide: UserService,
+          useValue: {
+            findAll: jest.fn(),
+            findOne: jest.fn(),
+            create: jest.fn(),
+            update: jest.fn(),
+            remove: jest.fn(),
+          },
+        },
+      ],
+    }).compile();
 
-  async findOne(id: string): Promise<User> {
-    try {
-      const user =
-        await this.domainService.findRepositoryService.findOneById(id);
-      if (!user) {
-        throw new NotFoundException(`ID'si ${id} olan kullanıcı bulunamadı`);
-      }
-      return user;
-    } catch (error) {
-      throw new InternalServerErrorException(
-        `Kullanıcıyı getirirken bir hata oluştu: ${error.message}`,
-      );
-    }
-  }
+    controller = module.get<UserController>(UserController);
+    service = module.get<UserService>(UserService);
+  });
 
-  async create(createUserDto: CreateUserDto): Promise<User> {
-    try {
-      const existingUserByEmail =
-        await this.domainService.findRepositoryService.findOneBy({
-          email: createUserDto.email,
-        });
-      if (existingUserByEmail) {
-        throw new ConflictException('Bu e-posta zaten kullanılıyor');
-      }
+  afterAll(async () => {});
 
-      const existingUserByPhone =
-        await this.domainService.findRepositoryService.findOneBy({
-          phoneNumber: createUserDto.phoneNumber,
-        });
-      if (existingUserByPhone) {
-        throw new ConflictException('Bu telefon numarası zaten kullanılıyor');
-      }
+  it('should User has been successfully created.', async () => {
+    const birthDate = dayjs().toDate();
+    const mockedResponse: User = {
+      email: 'user@example.com',
+      name: 'John Doe',
+      password: 'StrongPassword123',
+      phoneNumber: '+123456789',
+      birthDate,
+      id: '',
+      predictions: [],
+    };
+    const mockCreateUserDto: CreateUserDto = {
+      email: 'user@example.com',
+      name: 'John Doe',
+      password: 'StrongPassword123',
+      phoneNumber: '+123456789',
+      birthDate,
+    };
 
-      return this.domainService.createRepositoryService.create(createUserDto);
-    } catch (error) {
-      if (error instanceof ConflictException) {
-        throw error;
-      } else {
-        throw new InternalServerErrorException(
-          `Kullanıcı oluşturulurken bir hata oluştu: ${error.message}`,
-        );
-      }
-    }
-  }
+    jest.spyOn(service, 'create').mockResolvedValue(mockedResponse);
 
-  async update(id: string, updateUserDto: UpdateUserDto) {
-    try {
-      const user =
-        await this.domainService.findRepositoryService.findOneById(id);
+    const response = await controller.create(mockCreateUserDto);
+    expect(controller).toBeDefined();
+    expect(response).toEqual(mockedResponse);
+  });
 
-      if (!user) {
-        throw new NotFoundException(`ID'si ${id} olan kullanıcı bulunamadı`);
-      }
+  it('should User has been fail created.', async () => {
+    const birthDate = dayjs().toDate();
+    jest
+      .spyOn(service, 'create')
+      .mockRejectedValueOnce(new Error('User creation failed'));
 
-      if (updateUserDto.email && updateUserDto.email !== user.email) {
-        const existingUserByEmail =
-          await this.domainService.findRepositoryService.findOneBy({
-            email: updateUserDto.email,
-          });
-        if (existingUserByEmail) {
-          throw new ConflictException('Bu e-posta zaten kullanılıyor');
-        }
-      }
+    const createUserDto = {
+      name: 'John',
+      email: 'john@example.com',
+      password: 'password123',
+      phoneNumber: '',
+      birthDate,
+    };
 
-      if (
-        updateUserDto.phoneNumber &&
-        updateUserDto.phoneNumber !== user.phoneNumber
-      ) {
-        const existingUserByPhone =
-          await this.domainService.findRepositoryService.findOneBy({
-            phoneNumber: updateUserDto.phoneNumber,
-          });
-        if (existingUserByPhone) {
-          throw new ConflictException('Bu telefon numarası zaten kullanılıyor');
-        }
-      }
+    await expect(service.create(createUserDto)).rejects.toThrow(
+      new InternalServerErrorException('User creation failed'),
+    );
+  });
 
-      return this.domainService.updateRepositoryService.updateOne(
-        id,
-        updateUserDto,
-      );
-    } catch (error) {
-      if (
-        error instanceof NotFoundException ||
-        error instanceof ConflictException
-      ) {
-        throw error;
-      } else {
-        throw new InternalServerErrorException(
-          `Kullanıcı güncellenirken bir hata oluştu: ${error.message}`,
-        );
-      }
-    }
-  }
+  it('should User has been successfully created.', async () => {
+    const birthDate = dayjs().toDate();
+    const mockedResponse: User = {
+      email: 'user@example.com',
+      name: 'John Doe',
+      password: 'StrongPassword123',
+      phoneNumber: '+123456789',
+      birthDate,
+      id: '',
+      predictions: [],
+    };
+    const mockCreateUserDto: CreateUserDto = {
+      email: 'user@example.com',
+      name: 'John Doe',
+      password: 'StrongPassword123',
+      phoneNumber: '+123456789',
+      birthDate,
+    };
 
-  async remove(id: string): Promise<void> {
-    try {
-      await this.domainService.deleteRepositoryService.removeOneById(id);
-    } catch (error) {
-      if (error instanceof NotFoundException) {
-        throw error;
-      } else {
-        throw new InternalServerErrorException(
-          `Kullanıcı silinirken bir hata oluştu: ${error.message}`,
-        );
-      }
-    }
-  }
+    jest.spyOn(service, 'findAll').mockResolvedValue(mockedResponse);
 
-  async findByEmail(email: string): Promise<User> {
-    try {
-      const user = await this.domainService.findRepositoryService.findOneBy({
-        email,
-      });
-      if (!user) {
-        throw new NotFoundException(
-          `Email adresi ${email} olan kullanıcı bulunamadı`,
-        );
-      }
-      return user;
-    } catch (error) {
-      throw new InternalServerErrorException(
-        `Kullanıcıyı getirirken bir hata oluştu: ${error.message}`,
-      );
-    }
-  }
-}
+    const response = await controller.create(mockCreateUserDto);
+    expect(controller).toBeDefined();
+    expect(response).toEqual(mockedResponse);
+  });
+});

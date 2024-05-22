@@ -2,6 +2,11 @@ import { TestingModule, Test } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { UserService } from './user.service';
+import { DomainService } from './domain/domain.service';
+import { FindRepositoryService } from './repository/find-repository.service';
+import { CreateRepositoryService } from './repository/create-repository.service';
+import { UpdateRepositoryService } from './repository/update-repository.service';
+import { DeleteRepositoryService } from './repository/delete-repository.service';
 
 const mockUserRepository = () => ({
   find: jest.fn(),
@@ -18,6 +23,11 @@ describe('UserService', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
+        DomainService,
+        FindRepositoryService,
+        CreateRepositoryService,
+        UpdateRepositoryService,
+        DeleteRepositoryService,
         UserService,
         {
           provide: getRepositoryToken(User),

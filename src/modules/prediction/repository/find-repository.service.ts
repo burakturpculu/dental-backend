@@ -1,9 +1,8 @@
-import { AbstractFind } from 'src/common/abstract/abstract-find.interface';
-import { AbstractOptionalFind } from 'src/common/abstract/abstract-optional-find.interface';
-import { AbstractRepository } from 'src/common/abstract/abstract-repo-service';
+import { AbstractOptionalFind } from '@common/abstract/abstract-optional-find.interface';
 import { Prediction } from '../entities/prediction.entity';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+
 import {
   EntityManager,
   FindManyOptions,
@@ -11,6 +10,8 @@ import {
   FindOptionsWhere,
   Repository,
 } from 'typeorm';
+import { AbstractRepository } from '@common/abstract/abstract-repo-service';
+import { AbstractFind } from '@common/abstract/abstract-find.interface';
 
 @Injectable()
 export class FindRepositoryService
@@ -21,6 +22,12 @@ export class FindRepositoryService
     @InjectRepository(Prediction) repository: Repository<Prediction>,
   ) {
     super(repository);
+  }
+  findOne(
+    options: FindOneOptions<Prediction>,
+    entityManager?: EntityManager | undefined,
+  ): Promise<Prediction> {
+    throw new Error('Method not implemented.');
   }
   find(
     options: FindOneOptions<Prediction>,
@@ -33,21 +40,10 @@ export class FindRepositoryService
     return entity;
   }
 
-  async findOne(
-    options: FindOneOptions<Prediction>,
-    entityManager?: EntityManager,
-  ): Promise<Prediction> {
-    const manager = this.selectEntityManager(entityManager);
-
-    const entity = await manager.findOne(Prediction, options);
-
-    return entity;
-  }
-
   findOneByOrNull(
     where: FindOptionsWhere<Prediction>,
     entityManager?: EntityManager,
-  ): Promise<Prediction> {
+  ): Promise<Prediction | null> {
     return this.findOneOrNull({ where }, entityManager);
   }
 

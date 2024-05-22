@@ -1,6 +1,6 @@
-import { AbstractRepository } from 'src/common/abstract/abstract-repo-service';
+import { AbstractRepository } from '../../../common/abstract/abstract-repo-service';
 import { User } from '../entities/user.entity';
-import { AbstractCreate } from 'src/common/abstract/abstract-create.interface';
+import { AbstractCreate } from '../../../common/abstract/abstract-create.interface';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EntityManager, Repository } from 'typeorm';

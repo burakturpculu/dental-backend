@@ -1,5 +1,5 @@
-import { User } from 'src/modules/user/entities/user.entity';
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import { User } from '../../user/entities/user.entity';
+import { Entity, PrimaryGeneratedColumn, ManyToOne, Column } from 'typeorm';
 
 @Entity()
 export class Prediction {

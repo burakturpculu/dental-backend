@@ -22,9 +22,13 @@ export class PredictionService {
     try {
       const formData = new FormData();
       formData.append('file', image, 'image.jpg');
-      const response = await axios.post(this.pythonServiceUrl, formData, {
-        headers: formData.getHeaders(),
-      });
+      const response = await axios.post(
+        this.pythonServiceUrl || 'http://localhost:8000/predict/',
+        formData,
+        {
+          headers: formData.getHeaders(),
+        },
+      );
 
       return response.data;
     } catch (error) {

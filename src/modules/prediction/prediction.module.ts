@@ -17,6 +17,11 @@ import { FindRepositoryService } from './repository/find-repository.service';
     CreateRepositoryService,
   ],
   controllers: [PredictionController],
-  exports: [PredictionService],
+  exports: [
+    PredictionService,
+    DomainService,
+    FindRepositoryService,
+    CreateRepositoryService,
+  ],
 })
 export class PredictionModule {}

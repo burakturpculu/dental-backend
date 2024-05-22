@@ -1,5 +1,5 @@
-import { Prediction } from 'src/modules/prediction/entities/prediction.entity';
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import { Prediction } from '../../prediction/entities/prediction.entity';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { v4 as uuidv4 } from 'uuid';
 
 @Entity()

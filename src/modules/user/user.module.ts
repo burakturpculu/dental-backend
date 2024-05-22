@@ -8,9 +8,10 @@ import { CreateRepositoryService } from './repository/create-repository.service'
 import { DeleteRepositoryService } from './repository/delete-repository.service';
 import { FindRepositoryService } from './repository/find-repository.service';
 import { UpdateRepositoryService } from './repository/update-repository.service';
+import { Prediction } from '@prediction/entities/prediction.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User])],
+  imports: [TypeOrmModule.forFeature([User, Prediction])],
   providers: [
     UserService,
     DomainService,
@@ -20,6 +21,13 @@ import { UpdateRepositoryService } from './repository/update-repository.service'
     DeleteRepositoryService,
   ],
   controllers: [UserController],
-  exports: [UserService],
+  exports: [
+    UserService,
+    DomainService,
+    FindRepositoryService,
+    CreateRepositoryService,
+    UpdateRepositoryService,
+    DeleteRepositoryService,
+  ],
 })
 export class UserModule {}
