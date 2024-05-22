@@ -1,17 +1,17 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
-  Repository,
-  FindOneOptions,
   EntityManager,
-  FindOptionsWhere,
   FindManyOptions,
+  FindOneOptions,
+  FindOptionsWhere,
+  Repository,
 } from 'typeorm';
 import { AbstractOptionalFind } from '../../../common/abstract/abstract-optional-find.interface';
 
-import { User } from '../entities/user.entity';
-import { AbstractFind } from '@common/abstract/abstract-find.interface';
+import { AbstractFind } from '../../../common/abstract/abstract-find.interface';
 import { AbstractRepository } from '../../../common/abstract/abstract-repo-service';
+import { User } from '../entities/user.entity';
 @Injectable()
 export class FindRepositoryService
   extends AbstractRepository<User>
@@ -20,11 +20,15 @@ export class FindRepositoryService
   constructor(@InjectRepository(User) repository: Repository<User>) {
     super(repository);
   }
-  findOne(
+  async findOne(
     options: FindOneOptions<User>,
-    entityManager?: EntityManager | undefined,
+    entityManager?: EntityManager,
   ): Promise<User> {
-    throw new Error('Method not implemented.');
+    const manager = this.selectEntityManager(entityManager);
+
+    const entity = await manager.findOne(User, options);
+
+    return entity;
   }
   find(): Promise<User[]> {
     throw new Error('Method not implemented.');

@@ -1,7 +1,7 @@
-import { AbstractOptionalFind } from '@common/abstract/abstract-optional-find.interface';
-import { Prediction } from '../entities/prediction.entity';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { AbstractOptionalFind } from '../../../common/abstract/abstract-optional-find.interface';
+import { Prediction } from '../entities/prediction.entity';
 
 import {
   EntityManager,
@@ -10,8 +10,8 @@ import {
   FindOptionsWhere,
   Repository,
 } from 'typeorm';
-import { AbstractRepository } from '@common/abstract/abstract-repo-service';
-import { AbstractFind } from '@common/abstract/abstract-find.interface';
+import { AbstractFind } from '../../../common/abstract/abstract-find.interface';
+import { AbstractRepository } from '../../../common/abstract/abstract-repo-service';
 
 @Injectable()
 export class FindRepositoryService
