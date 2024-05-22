@@ -1,8 +1,26 @@
-import { Controller, Post, UploadedFile, UseInterceptors, BadRequestException, Get, Param, Req, UseGuards, InternalServerErrorException } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  UploadedFile,
+  UseInterceptors,
+  BadRequestException,
+  Get,
+  Param,
+  Req,
+  UseGuards,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { PredictionService } from './prediction.service';
-import { ApiOperation, ApiResponse, ApiConsumes, ApiBody, ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { diskStorage, memoryStorage } from 'multer';
+import {
+  ApiOperation,
+  ApiResponse,
+  ApiConsumes,
+  ApiBody,
+  ApiBearerAuth,
+  ApiTags,
+} from '@nestjs/swagger';
+import { diskStorage } from 'multer';
 import { Express } from 'express';
 import { JwtAuthGuard } from 'src/modules/auth/guards/jwt-auth.guard';
 import { CreatePredictionDto } from './dto/create-prediction.dto';
@@ -17,18 +35,20 @@ export class PredictionController {
 
   @Post()
   @UseGuards(JwtAuthGuard)
-  @UseInterceptors(FileInterceptor('file', {
-    storage: diskStorage({
-      destination: './uploads',
-      filename: (req, file, cb) => {
-        const randomName = Array(16)
-          .fill(null)
-          .map(() => (Math.random() * 16).toString(36))
-          .join('');
-        cb(null, `${randomName}${extname(file.originalname)}`);
-      },
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: diskStorage({
+        destination: './uploads',
+        filename: (req, file, cb) => {
+          const randomName = Array(16)
+            .fill(null)
+            .map(() => (Math.random() * 16).toString(36))
+            .join('');
+          cb(null, `${randomName}${extname(file.originalname)}`);
+        },
+      }),
     }),
-  }))
+  )
   @ApiOperation({ summary: 'Predict dental condition from image' })
   @ApiResponse({ status: 200, description: 'Return prediction results.' })
   @ApiConsumes('multipart/form-data')
@@ -43,10 +63,7 @@ export class PredictionController {
       },
     },
   })
-  async predict(
-    @UploadedFile() file: Express.Multer.File,
-    @Req() req
-  ){
+  async predict(@UploadedFile() file: Express.Multer.File, @Req() req) {
     if (!file) {
       throw new BadRequestException('No file uploaded');
     }
@@ -64,7 +81,9 @@ export class PredictionController {
       return result;
     } catch (error) {
       console.error('Error during prediction:', error);
-      throw new InternalServerErrorException(`Prediction failed: ${error.message}`);
+      throw new InternalServerErrorException(
+        `Prediction failed: ${error.message}`,
+      );
     }
   }
 
@@ -73,7 +92,8 @@ export class PredictionController {
   @ApiOperation({ summary: 'Get predictions by user ID' })
   @ApiResponse({ status: 200, description: 'Return prediction results.' })
   async getPredictions(@Param('userId') userId: string): Promise<any> {
-    const predictions = await this.predictionService.getPredictionsByUserId(userId);
+    const predictions =
+      await this.predictionService.getPredictionsByUserId(userId);
     return predictions;
   }
 }

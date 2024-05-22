@@ -11,7 +11,14 @@ import { UpdateRepositoryService } from './repository/update-repository.service'
 
 @Module({
   imports: [TypeOrmModule.forFeature([User])],
-  providers: [UserService,DomainService,FindRepositoryService,CreateRepositoryService,UpdateRepositoryService,DeleteRepositoryService],
+  providers: [
+    UserService,
+    DomainService,
+    FindRepositoryService,
+    CreateRepositoryService,
+    UpdateRepositoryService,
+    DeleteRepositoryService,
+  ],
   controllers: [UserController],
   exports: [UserService],
 })

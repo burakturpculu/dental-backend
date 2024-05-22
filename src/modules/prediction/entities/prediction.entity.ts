@@ -6,7 +6,7 @@ export class Prediction {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @ManyToOne(() => User, user => user.predictions)
+  @ManyToOne(() => User, (user) => user.predictions)
   user: User;
 
   @Column('float')
@@ -22,5 +22,5 @@ export class Prediction {
   filePath: string;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-    createdAt: Date;
+  createdAt: Date;
 }

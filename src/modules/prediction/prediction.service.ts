@@ -28,7 +28,9 @@ export class PredictionService {
 
       return response.data;
     } catch (error) {
-      throw new InternalServerErrorException(`Prediction failed: ${error.response?.data || error.message}`);
+      throw new InternalServerErrorException(
+        `Prediction failed: ${error.response?.data || error.message}`,
+      );
     }
   }
 
@@ -37,6 +39,9 @@ export class PredictionService {
   }
 
   async getPredictionsByUserId(userId: string): Promise<Prediction[]> {
-    return this.predictionRepository.find({ where: { user: { id: userId } }, relations: ['user'] });
+    return this.predictionRepository.find({
+      where: { user: { id: userId } },
+      relations: ['user'],
+    });
   }
 }

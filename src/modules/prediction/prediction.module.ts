@@ -9,11 +9,13 @@ import { CreateRepositoryService } from './repository/create-repository.service'
 import { FindRepositoryService } from './repository/find-repository.service';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([Prediction]),
-    UserModule,
+  imports: [TypeOrmModule.forFeature([Prediction]), UserModule],
+  providers: [
+    PredictionService,
+    DomainService,
+    FindRepositoryService,
+    CreateRepositoryService,
   ],
-  providers: [PredictionService,DomainService,FindRepositoryService,CreateRepositoryService],
   controllers: [PredictionController],
   exports: [PredictionService],
 })

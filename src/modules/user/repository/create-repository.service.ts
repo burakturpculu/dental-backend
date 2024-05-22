@@ -1,23 +1,28 @@
-import { AbstractRepository } from "src/common/abstract/abstract-repo-service";
-import { User } from "../entities/user.entity";
-import { AbstractCreate } from "src/common/abstract/abstract-create.interface";
-import { BadRequestException, Injectable } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
-import { EntityManager, Repository } from "typeorm";
-import { CreateUserDto } from "../dto/create-user.dto";
+import { AbstractRepository } from 'src/common/abstract/abstract-repo-service';
+import { User } from '../entities/user.entity';
+import { AbstractCreate } from 'src/common/abstract/abstract-create.interface';
+import { BadRequestException, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { EntityManager, Repository } from 'typeorm';
+import { CreateUserDto } from '../dto/create-user.dto';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
-export class CreateRepositoryService extends AbstractRepository<User> implements AbstractCreate<User> {
-
+export class CreateRepositoryService
+  extends AbstractRepository<User>
+  implements AbstractCreate<User>
+{
   constructor(@InjectRepository(User) repository: Repository<User>) {
     super(repository);
   }
-  createMany(data: any, entityManager?: EntityManager): Promise<User[]> {
-    throw new Error("Method not implemented.");
+  createMany(): Promise<User[]> {
+    throw new Error('Method not implemented.');
   }
 
-  async create(data: CreateUserDto, entityManager?: EntityManager): Promise<User> {
+  async create(
+    data: CreateUserDto,
+    entityManager?: EntityManager,
+  ): Promise<User> {
     const manager = this.selectEntityManager(entityManager);
 
     const hashedPassword = await bcrypt.hash(data.password, 10);
@@ -29,7 +34,7 @@ export class CreateRepositoryService extends AbstractRepository<User> implements
       phoneNumber: data.phoneNumber,
       birthDate: data.birthDate,
     });
-    
+
     try {
       const result = await manager.save(User, entity);
 

@@ -6,14 +6,20 @@ export interface AbstractDelete<T> {
    * @param options
    * @param entityManager
    */
-  deleteMany(options: FindManyOptions<T>, entityManager?: EntityManager): Promise<T[]>;
+  deleteMany(
+    options: FindManyOptions<T>,
+    entityManager?: EntityManager,
+  ): Promise<T[]>;
 
   /**
    * Soft deletes many entities by given conditions.
    * @param options
    * @param entityManager
    */
-  deleteManyBy(options: FindOptionsWhere<T>, entityManager?: EntityManager): Promise<T[]>;
+  deleteManyBy(
+    options: FindOptionsWhere<T>,
+    entityManager?: EntityManager,
+  ): Promise<T[]>;
 
   /**
    * Soft deletes an entity by given id.

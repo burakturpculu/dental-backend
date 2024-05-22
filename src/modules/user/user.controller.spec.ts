@@ -1,4 +1,9 @@
-import { Injectable, NotFoundException, ConflictException, InternalServerErrorException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  ConflictException,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { DomainService } from './domain/domain.service';
 import { User } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -16,74 +21,103 @@ export class UserService {
       }
       return users;
     } catch (error) {
-      throw new InternalServerErrorException('Kullanıcıları getirirken bir hata oluştu');
+      throw new InternalServerErrorException(
+        'Kullanıcıları getirirken bir hata oluştu',
+      );
     }
   }
 
   async findOne(id: string): Promise<User> {
     try {
-      const user = await this.domainService.findRepositoryService.findOneById(id);
+      const user =
+        await this.domainService.findRepositoryService.findOneById(id);
       if (!user) {
         throw new NotFoundException(`ID'si ${id} olan kullanıcı bulunamadı`);
       }
       return user;
     } catch (error) {
-      throw new InternalServerErrorException(`Kullanıcıyı getirirken bir hata oluştu: ${error.message}`);
+      throw new InternalServerErrorException(
+        `Kullanıcıyı getirirken bir hata oluştu: ${error.message}`,
+      );
     }
   }
 
   async create(createUserDto: CreateUserDto): Promise<User> {
     try {
-      // Email ve telefon numarası kontrolü
-      const existingUserByEmail = await this.domainService.findRepositoryService.findOneBy({ email: createUserDto.email });
+      const existingUserByEmail =
+        await this.domainService.findRepositoryService.findOneBy({
+          email: createUserDto.email,
+        });
       if (existingUserByEmail) {
         throw new ConflictException('Bu e-posta zaten kullanılıyor');
       }
 
-      const existingUserByPhone = await this.domainService.findRepositoryService.findOneBy({ phoneNumber: createUserDto.phoneNumber });
+      const existingUserByPhone =
+        await this.domainService.findRepositoryService.findOneBy({
+          phoneNumber: createUserDto.phoneNumber,
+        });
       if (existingUserByPhone) {
         throw new ConflictException('Bu telefon numarası zaten kullanılıyor');
       }
 
-      // Kullanıcı oluşturma
       return this.domainService.createRepositoryService.create(createUserDto);
     } catch (error) {
       if (error instanceof ConflictException) {
         throw error;
       } else {
-        throw new InternalServerErrorException(`Kullanıcı oluşturulurken bir hata oluştu: ${error.message}`);
+        throw new InternalServerErrorException(
+          `Kullanıcı oluşturulurken bir hata oluştu: ${error.message}`,
+        );
       }
     }
   }
 
-  async update(id: string, updateUserDto: UpdateUserDto){
+  async update(id: string, updateUserDto: UpdateUserDto) {
     try {
-      const user = await this.domainService.findRepositoryService.findOneById(id);
+      const user =
+        await this.domainService.findRepositoryService.findOneById(id);
 
       if (!user) {
         throw new NotFoundException(`ID'si ${id} olan kullanıcı bulunamadı`);
       }
 
       if (updateUserDto.email && updateUserDto.email !== user.email) {
-        const existingUserByEmail = await this.domainService.findRepositoryService.findOneBy({ email: updateUserDto.email });
+        const existingUserByEmail =
+          await this.domainService.findRepositoryService.findOneBy({
+            email: updateUserDto.email,
+          });
         if (existingUserByEmail) {
           throw new ConflictException('Bu e-posta zaten kullanılıyor');
         }
       }
 
-      if (updateUserDto.phoneNumber && updateUserDto.phoneNumber !== user.phoneNumber) {
-        const existingUserByPhone = await this.domainService.findRepositoryService.findOneBy({ phoneNumber: updateUserDto.phoneNumber });
+      if (
+        updateUserDto.phoneNumber &&
+        updateUserDto.phoneNumber !== user.phoneNumber
+      ) {
+        const existingUserByPhone =
+          await this.domainService.findRepositoryService.findOneBy({
+            phoneNumber: updateUserDto.phoneNumber,
+          });
         if (existingUserByPhone) {
           throw new ConflictException('Bu telefon numarası zaten kullanılıyor');
         }
       }
 
-      return this.domainService.updateRepositoryService.updateOne(id, updateUserDto);
+      return this.domainService.updateRepositoryService.updateOne(
+        id,
+        updateUserDto,
+      );
     } catch (error) {
-      if (error instanceof NotFoundException || error instanceof ConflictException) {
+      if (
+        error instanceof NotFoundException ||
+        error instanceof ConflictException
+      ) {
         throw error;
       } else {
-        throw new InternalServerErrorException(`Kullanıcı güncellenirken bir hata oluştu: ${error.message}`);
+        throw new InternalServerErrorException(
+          `Kullanıcı güncellenirken bir hata oluştu: ${error.message}`,
+        );
       }
     }
   }
@@ -95,20 +129,28 @@ export class UserService {
       if (error instanceof NotFoundException) {
         throw error;
       } else {
-        throw new InternalServerErrorException(`Kullanıcı silinirken bir hata oluştu: ${error.message}`);
+        throw new InternalServerErrorException(
+          `Kullanıcı silinirken bir hata oluştu: ${error.message}`,
+        );
       }
     }
   }
 
   async findByEmail(email: string): Promise<User> {
     try {
-      const user = await this.domainService.findRepositoryService.findOneBy({ email });
+      const user = await this.domainService.findRepositoryService.findOneBy({
+        email,
+      });
       if (!user) {
-        throw new NotFoundException(`Email adresi ${email} olan kullanıcı bulunamadı`);
+        throw new NotFoundException(
+          `Email adresi ${email} olan kullanıcı bulunamadı`,
+        );
       }
       return user;
     } catch (error) {
-      throw new InternalServerErrorException(`Kullanıcıyı getirirken bir hata oluştu: ${error.message}`);
+      throw new InternalServerErrorException(
+        `Kullanıcıyı getirirken bir hata oluştu: ${error.message}`,
+      );
     }
   }
 }

@@ -1,10 +1,24 @@
-import { Controller, Get, Post, Body, Put, Param, Delete, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Put,
+  Param,
+  Delete,
+  UseGuards,
+} from '@nestjs/common';
 import { UserService } from './user.service';
 import { User } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { IdParamDto } from './dto/id-param.dto';
-import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/modules/auth/guards/jwt-auth.guard';
 
 @ApiTags('users')
@@ -31,23 +45,35 @@ export class UserController {
 
   @Post()
   @ApiOperation({ summary: 'Create a new user' })
-  @ApiResponse({ status: 201, description: 'The user has been successfully created.' })
-  @ApiResponse({ status: 409, description: 'Conflict. Email or phone number already exists.' })
+  @ApiResponse({
+    status: 201,
+    description: 'The user has been successfully created.',
+  })
+  @ApiResponse({
+    status: 409,
+    description: 'Conflict. Email or phone number already exists.',
+  })
   create(@Body() createUserDto: CreateUserDto): Promise<User> {
     return this.userService.create(createUserDto);
   }
 
   @Put(':id')
   @ApiOperation({ summary: 'Update a user' })
-  @ApiResponse({ status: 200, description: 'The user has been successfully updated.' })
+  @ApiResponse({
+    status: 200,
+    description: 'The user has been successfully updated.',
+  })
   @ApiResponse({ status: 404, description: 'User not found.' })
-  update(@Param() params: IdParamDto, @Body() updateUserDto: UpdateUserDto){
+  update(@Param() params: IdParamDto, @Body() updateUserDto: UpdateUserDto) {
     return this.userService.update(params.id, updateUserDto);
   }
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a user' })
-  @ApiResponse({ status: 200, description: 'The user has been successfully deleted.' })
+  @ApiResponse({
+    status: 200,
+    description: 'The user has been successfully deleted.',
+  })
   @ApiResponse({ status: 404, description: 'User not found.' })
   remove(@Param() params: IdParamDto): Promise<void> {
     return this.userService.remove(params.id);

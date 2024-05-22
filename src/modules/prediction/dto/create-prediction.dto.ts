@@ -17,4 +17,3 @@ export class CreatePredictionDto {
   @IsNotEmpty()
   filePath: string;
 }
-
